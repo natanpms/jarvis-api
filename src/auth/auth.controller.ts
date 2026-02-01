@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthResponseDto, SignInDto, SignUpDto } from './dtos/auth';
+import { AuthResponseDto, SignInDto, SignUpDto } from './dto/auth';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 

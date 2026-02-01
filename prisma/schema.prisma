@@ -15,10 +15,68 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  password      String
+  transactions  Transaction[]
+  subscriptions Subscription[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Transaction {
+  id          Int             @id @default(autoincrement())
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        TransactionType
+  amount      Float
+  description String?
+  date        DateTime // Para filtrar por mês e semana
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([date])
+}
+
+enum TransactionType {
+  RECEITA
+  DESPESA
+}
+
+model Subscription {
+  id         Int                @id @default(autoincrement())
+  userId     Int
+  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String // Netflix, Spotify, Academia
+  amount     Float
+  recurrence RecurrenceType // MONTHLY ou ONCE
+  status     SubscriptionStatus
+  type       SubscriptionType
+  startedAt  DateTime // quando começou
+  endedAt    DateTime? // quando terminou (se cancelou)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([startedAt])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAUSED
+}
+
+enum SubscriptionType {
+  ENTRETENIMENTO // streaming, jogos
+  FITNESS // academia, apps de treino
+  ESTUDOS // cursos, plataformas de aprendizado 
+  PESSOAL //
+}
+
+enum RecurrenceType {
+  MONTHLY // todo mês
+  ONCE // apenas um mês
 }
