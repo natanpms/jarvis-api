@@ -64,4 +64,20 @@ export class AuthService {
         };
 
     }
+
+    async deleteUser(userId: number) {
+        const userDeleted = await this.prisma.user.delete({
+            where: {
+                id: userId
+            }
+        })
+
+        if (!userDeleted) {
+            throw new UnauthorizedException('Usuário não encontrado.');
+        }
+
+        return {
+            message: 'Usuário deletado com sucesso.'
+        };
+    }
 }

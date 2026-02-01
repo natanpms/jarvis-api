@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { SignInDto, SignUpDto } from './dtos/auth';
+import { AuthResponseDto, SignInDto, SignUpDto } from './dtos/auth';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 
@@ -13,7 +13,7 @@ export class AuthController {
     }
 
     @Post('signin')
-    async signIn(@Body() bodyRequest: SignInDto) {
+    async signIn(@Body() bodyRequest: SignInDto): Promise<AuthResponseDto> {
         return this.AuthService.signIn(bodyRequest);
     }
 
@@ -21,6 +21,12 @@ export class AuthController {
     @Get('me')
     async me(@Request() request) {
         return request.user;
+    }
+
+    @UseGuards(AuthGuard)
+    @Delete('user')
+    async deleteMe(@Request() request) {
+        return this.AuthService.deleteUser(request.user.id);
     }
 
 }
